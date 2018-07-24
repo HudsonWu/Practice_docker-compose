@@ -1,11 +1,12 @@
 FROM node:alpine
 
 # Create app directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+RUN if [ ! -d /usr/src/consult ]; then \
+    echo "directory no found, will auto create" && \
+    mkdir -p /usr/src/consult \
+;fi
 
-# Install app dependencies
-COPY package.json /usr/src/app/
+WORKDIR /usr/src/consult
 
 RUN apk add --update \
     python \
@@ -15,8 +16,5 @@ RUN apk add --update \
 
 RUN npm install
 
-# Bundle app source
-COPY laravel-echo-server.json /usr/src/app/laravel-echo-server.json
-
-EXPOSE 3000
+EXPOSE 8088
 CMD [ "npm", "start" ]

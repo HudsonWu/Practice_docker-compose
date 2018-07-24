@@ -1,11 +1,12 @@
 FROM node:alpine
 
 # Create app directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+RUN if [ ! -d /usr/src/portal ]; then \
+    echo "directory no found, will auto create" && \
+    mkdir -p /usr/src/portal \
+;fi
 
-# Install app dependencies
-COPY package.json /usr/src/app/
+WORKDIR /usr/src/portal
 
 RUN apk add --update \
     python \
@@ -15,8 +16,7 @@ RUN apk add --update \
 
 RUN npm install
 
-# Bundle app source
-COPY laravel-echo-server.json /usr/src/app/laravel-echo-server.json
+RUN npm install -g pm2
 
-EXPOSE 3000
-CMD [ "npm", "start" ]
+EXPOSE 8085
+CMD [ "pm2", "start", "app.js" ]

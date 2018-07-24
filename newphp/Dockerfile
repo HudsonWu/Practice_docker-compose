@@ -12,11 +12,9 @@ RUN wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm 
     rpm -Uvh remi-release-7.rpm epel-release-latest-7.noarch.rpm
 
 # 设置php版本
-ARG PHP_VERSION=${PHP_VERSION}
-
 RUN yum update -y && \
     yum -y install yum-utils && \
-    yum-config-manager --enable ${PHP_VERSION}
+    yum-config-manager --enable remi-php71
     
 # 安装php
 RUN yum install -y php-cli php-fpm php-mcrypt php-mysqlnd php-gd mod_php php-pdo \
