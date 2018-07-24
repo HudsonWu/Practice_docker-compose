@@ -1,22 +1,15 @@
-FROM node:alpine
+FROM node
 
-# Create app directory
-RUN if [ ! -d /usr/src/portal ]; then \
-    echo "directory no found, will auto create" && \
-    mkdir -p /usr/src/portal \
-;fi
+LABEL maintainer="wuhaishui <wuhaishui@zwehs.com>"
+
+# 设置时区
+RUN cp -f /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo "Asia/Shanghai" > /etc/timezone
+
+# 更改源
+RUN npm config set registry http://registry.npm.taobao.org/
 
 WORKDIR /usr/src/portal
 
-RUN apk add --update \
-    python \
-    python-dev \
-    py-pip \
-    build-base
+EXPOSE 1338
 
-RUN npm install
-
-RUN npm install -g pm2
-
-EXPOSE 8085
-CMD [ "pm2", "start", "app.js" ]
+CMD [ "node", "app.js" ]

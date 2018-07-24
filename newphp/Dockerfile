@@ -4,7 +4,12 @@ LABEL maintainer="wuhaishui <wuhaishui@zwehs.com>"
 
 
 # 修改时区
-RUN ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+RUN ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+# 安装所需的工具
+RUN yum update -y && \
+    yum install -y wget curl git&& \
+    yum install -y yum-utils
 
 # 添加php安装所需要的yum源
 RUN wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
@@ -12,9 +17,7 @@ RUN wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm 
     rpm -Uvh remi-release-7.rpm epel-release-latest-7.noarch.rpm
 
 # 设置php版本
-RUN yum update -y && \
-    yum -y install yum-utils && \
-    yum-config-manager --enable remi-php71
+RUN yum-config-manager --enable remi-php71
     
 # 安装php
 RUN yum install -y php-cli php-fpm php-mcrypt php-mysqlnd php-gd mod_php php-pdo \
@@ -31,7 +34,39 @@ RUN curl -sS https://getcomposer.org/installer | php && \
 # composer中国镜像
 RUN composer config -g repo.packagist composer https://packagist.phpcomposer.com
 
-# 开启php-fpm
-RUN systemctl start php-fpm
+# php.ini
+COPY php.ini /tmp/php.ini
+COPY opcache.ini /tmp/opcache.ini
+COPY mysql.ini /tmp/mysql.ini
 
+RUN cp -f /tmp/php.ini /etc/php.ini && \
+    cp -f /tmp/opcache.ini /etc/php.d/opcache.ini && \
+    cp -f /tmp/mysql.ini /etc/php.d/mysql.ini && \
+    rm -f /tmp/*.ini
 
+# SSH
+COPY insecure_id_rsa /tmp/id_rsa
+COPY insecure_id_rsa.pub /tmp/id_rsa.pub
+
+RUN if [ ! -d /root/.ssh ]; then \
+    mkdir -p /root/.ssh \
+;fi
+
+RUN cat /tmp/id_rsa.pub >> /root/.ssh/authorized_keys \
+    && cat /tmp/id_rsa.pub >> /root/.ssh/id_rsa.pub \
+    && cat /tmp/id_rsa >> /root/.ssh/id_rsa \
+    && rm -f /tmp/id_rsa* \
+    && chmod 644 /root/.ssh/authorized_keys /root/.ssh/id_rsa.pub \
+    && chmod 400 /root/.ssh/id_rsa
+
+RUN mkdir -p /run/php-fpm
+
+WORKDIR /var/www/parallel
+
+# 开启队列
+RUN cd /var/www/parallel && \
+    php artisan queue:work redis --sleep=3 --tries=3 &
+
+RUN php-fpm &
+
+EXPOSE 9000

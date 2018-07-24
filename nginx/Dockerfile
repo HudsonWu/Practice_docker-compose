@@ -2,11 +2,8 @@ FROM nginx:alpine
 
 COPY nginx.conf /etc/nginx/
 
-ARG CHANGE_SOURCE=true
-RUN if [ ${CHANGE_SOURCE} = true ]; then \
-    # Change application source from dl-cdn.alpinelinux.org to aliyun source
-    sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories \
-;fi
+# 更换源，从dl-cdn.alpinelinux.org更换到aliyun source
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories
 
 RUN apk update \
     && apk upgrade \
@@ -22,4 +19,4 @@ RUN echo "upstream php-upstream { server ${PHP_UPSTREAM_CONTAINER}:${PHP_UPSTREA
 
 CMD ["nginx"]
 
-EXPOSE 80 443
+EXPOSE 80

@@ -24,6 +24,16 @@ services:
         context: ./newphp
       volumes:
         - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+      ports:
+        - "${SSH_PORT}:22"
+        - "${FPM_PORT}:9000"
+      links:
+        - redis
+        - mysql
+        - api
+      depends_on:
+        - redis
+        - mysql
       networks:
         - frontend
         - backend
@@ -39,27 +49,25 @@ services:
         - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
         - ${NGINX_HOST_LOG_PATH}:/var/log/nginx
         - ${NGINX_SITES_PATH}:/etc/nginx/sites-available
+      links:
+        - newphp
       ports:
         - "${NGINX_HOST_HTTP_PORT}:80"
-        - "${NGINX_HOST_HTTPS_PORT}:443"
       depends_on:
-        - php-fpm
+        - newphp
       networks:
         - frontend
         - backend
 
- MySQL ################################################
+## MySQL ################################################
     mysql:
       build:
         context: ./mysql
-        args:
-          - MYSQL_VERSION=${MYSQL_VERSION}
       environment:
         - MYSQL_DATABASE=${MYSQL_DATABASE}
         - MYSQL_USER=${MYSQL_USER}
         - MYSQL_PASSWORD=${MYSQL_PASSWORD}
         - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-        - TZ=${WORKSPACE_TIMEZONE}
       volumes:
         - ${DATA_PATH_HOST}/mysql:/var/lib/mysql
         - ${MYSQL_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
@@ -105,7 +113,7 @@ services:
         - "${ELASTICSEARCH_HOST_HTTP_PORT}:9200"
         - "${ELASTICSEARCH_HOST_TRANSPORT_PORT}:9300"
       depends_on:
-        - php-fpm
+        - newphp
       networks:
         - frontend
         - backend
@@ -116,8 +124,13 @@ services:
         context: ./api
       volumes:
         - ${API_CODE_PATH_HOST}:${API_CODE_PATH_CONTAINER}
+      links:
+        - redis
+        - mongo
       ports:
         - "${API_PORT}:8085"
+      depends_on:
+        - redis
       networks:
         - frontend
         - backend
@@ -128,8 +141,12 @@ services:
         context: ./member
       volumes:
         - ${MEMBER_CODE_PATH_HOST}:${MEMBER_CODE_PATH_CONTAINER}
+      links:
+        - redis
       ports:
         - "${MEMBER_PORT}:1337"
+      depends_on:
+        - redis
       networks:
         - frontend
         - backend
@@ -140,8 +157,12 @@ services:
         context: ./portal
       volumes:
         - ${PORTAL_CODE_PATH_HOST}:${PORTAL_CODE_PATH_CONTAINER}
+      links:
+        - redis
       ports:
         - "${PORTAL_PORT}:1338"
+      depends_on:
+        - redis
       networks:
         - frontend
         - backend
@@ -152,8 +173,13 @@ services:
         context: ./consult
       volumes:
         - ${CONSULT_CODE_PATH_HOST}:${CONSULT_CODE_PATH_CONTAINER}
+      links:
+        - redis
       ports:
         - "${CONSULT_PORT}:8088"
+      depends_on:
+        - redis
+        - api
       networks:
         - frontend
         - backend

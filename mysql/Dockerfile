@@ -4,10 +4,7 @@ FROM mysql:5.7
 # Set Timezone
 #####################################
 
-ARG TZ=Asia/Shanghai
-ENV TZ ${TZ}
-
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo $TZ > /etc/timezone
 
 RUN chown -R mysql:root /var/lib/mysql/
 
