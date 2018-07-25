@@ -145,10 +145,8 @@ services:
       depends_on:
         - redis
       networks:
-        frontend:
-        backend:
-          aliases:
-            - api.parallel.test
+        - frontend
+        - backend
         
 ## member #######################################
     member:
