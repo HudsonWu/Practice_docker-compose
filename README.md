@@ -111,7 +111,7 @@ mysql -u root -p < /docker-entrypoint-initdb.d/parallel.sql
 
 ### 项目中服务连接配置
 
-容器内部间连接，在配置文件配置相关服务时，使用主机名，如redis的配置
+1. 容器内部间连接，在配置文件配置相关服务时，使用主机名，如redis的配置
 <pre>
 redis:{
     host: 'redis',
@@ -120,3 +120,9 @@ redis:{
     prefix: 'portal:'
     }   
 </pre>
+
+2. 由于前端服务器打开过程中有交互以及切换的情况，这里对服务网络访问做了域名指向
+可能需要适当配置hosts文件
+只使用php服务时，只需要配置api.parallel.test, web.parallel.test两个域名和ip对应即可
+使用前端服务时，需要再配置portal.parallel.test, member.parallel.test，consult.parallel.test和ip对应
+
