@@ -5,21 +5,31 @@
 
 **docker-compose的命令执行都是在parallel_docker根目录下执行的**
 
-+ 只开启mysql数据库
++ 开启所有服务
+> docker-compose up -d
+
++ 只开启mysql
 > docker-compose up -d mysql
 
 + 只开启redis
 > docker-compose up -d redis
+
++ 只开启elasticsearch
+> docker-compose up -d elasticsearch
+
++ 只开启mongo
+> docker-compose up -d mongo
  
 + 开启php后台服务器
-> docker-compose up -d nginx mysql redis newphp
+> docker-compose up -d mysql redis php-fpm nginx workspace
 
 + 开启会员中心和门户网站
-> docker-compose up -d nginx mysql redis newphp member portal
+> docker-compose up -d nginx mysql redis php-fpm workspace member portal
 
 + 开启咨询机构控制台
-> docker-compose up -d nginx mysql redis mongo newphp api member portal consult
+> docker-compose up -d nginx mysql redis mongo php-fpm workspace api member portal consult
 
+(也可以单独开启容器的某一个服务，其他的服务连接外部)
 
 ## 服务维护
 
@@ -98,4 +108,12 @@ mysql -u root -p < /docker-entrypoint-initdb.d/parallel.sql
 
 ### 项目中服务连接配置
 
-配置时, redis host使用 redis; mysql host使用 mysql
+容器内部间连接，在配置文件配置相关服务时，使用主机名，如redis的配置
+<pre>
+redis:{
+    host: 'redis',
+    port: 6379,
+    db: 3,
+    prefix: 'portal:'
+    }   
+</pre>

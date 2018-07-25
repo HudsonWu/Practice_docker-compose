@@ -1,12 +1,14 @@
-FROM node
+FROM node:alpine
 
 LABEL maintainer="wuhaishui <wuhaishui@zwehs.com>"
 
-# 设置时区
-RUN cp -f /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo "Asia/Shanghai" > /etc/timezone
-
 # 更改源
-RUN npm config set registry http://registry.npm.taobao.org/
+RUN echo http://mirrors.ustc.edu.cn/alpine/v3.6/main > /etc/apk/repositories && \
+    echo http://mirrors.ustc.edu.cn/alpine/v3.6/community >> /etc/apk/repositories
+
+# 安装基础包+设置时区
+RUN apk update && apk add curl bash tree tzdata && \
+    cp -r -f /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 WORKDIR /usr/src/member
 

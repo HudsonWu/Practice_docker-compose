@@ -7,14 +7,21 @@ LABEL maintainer="wuhaishui <wuhaishui@zwehs.com>"
 RUN ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 # 安装所需的工具
+
 RUN yum update -y && \
     yum install -y wget curl git&& \
     yum install -y yum-utils
 
+# 解决 Public key for *.rpm is not installed问题
+RUN cd /etc/pki/rpm-gpg && \
+    wget http://mirrors.163.com/centos/RPM-GPG-KEY-CentOS-7 && \
+    rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
 # 添加php安装所需要的yum源
 RUN wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
     wget https://rpms.remirepo.net/enterprise/remi-release-7.rpm && \
-    rpm -Uvh remi-release-7.rpm epel-release-latest-7.noarch.rpm
+    rpm -Uvh remi-release-7.rpm epel-release-latest-7.noarch.rpm && \
+    yum update -y
 
 # 设置php版本
 RUN yum-config-manager --enable remi-php71
@@ -59,6 +66,10 @@ RUN cat /tmp/id_rsa.pub >> /root/.ssh/authorized_keys \
     && chmod 644 /root/.ssh/authorized_keys /root/.ssh/id_rsa.pub \
     && chmod 400 /root/.ssh/id_rsa
 
+# 清理战场
+RUN yum clean all && \
+    rm -rf /var/cache/yum/*
+
 RUN mkdir -p /run/php-fpm
 
 WORKDIR /var/www/parallel
@@ -67,6 +78,8 @@ WORKDIR /var/www/parallel
 RUN cd /var/www/parallel && \
     php artisan queue:work redis --sleep=3 --tries=3 &
 
-RUN php-fpm &
+RUN php-fpm
 
-EXPOSE 9000
+CMD [ "/bin/bash" ]
+
+EXPOSE 9000 22
