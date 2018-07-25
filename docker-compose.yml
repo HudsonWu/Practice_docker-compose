@@ -61,8 +61,11 @@ services:
       depends_on:
         - php-fpm
       networks:
-        - frontend
-        - backend
+        frontend:
+        backend:
+          aliases:
+            - api.parallel.test
+            - web.parallel.test
 
 ## MySQL ################################################
     mysql:
@@ -111,7 +114,7 @@ services:
       volumes:
         - elasticsearch:/usr/share/elasticsearch/data
       environment:
-        - cluster.container_name=laradock-cluster
+        - cluster.name=parallel-cluster
         - bootstrap.memory_lock=true
         - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       ulimits:
@@ -142,8 +145,10 @@ services:
       depends_on:
         - redis
       networks:
-        - frontend
-        - backend
+        frontend:
+        backend:
+          aliases:
+            - api.parallel.test
         
 ## member #######################################
     member:
@@ -154,15 +159,15 @@ services:
         - ${MEMBER_CODE_PATH_HOST}:${MEMBER_CODE_PATH_CONTAINER}
       links:
         - redis
-        - nginx:api.parallel.test
-        - nginx:web.parallel.test
       ports:
         - "${MEMBER_PORT}:1337"
       depends_on:
         - redis
       networks:
-        - frontend
-        - backend
+        frontend:
+        backend:
+          aliases:
+            - member.parallel.test
         
 ## portal #######################################
     portal:
@@ -173,15 +178,15 @@ services:
         - ${PORTAL_CODE_PATH_HOST}:${PORTAL_CODE_PATH_CONTAINER}
       links:
         - redis
-        - nginx:api.parallel.test
-        - nginx:web.parallel.test
       ports:
         - "${PORTAL_PORT}:1338"
       depends_on:
         - redis
       networks:
-        - frontend
-        - backend
+        frontend:
+        backend:
+          aliases:
+            - portal.parallel.test
 
  ## consult #######################################
     consult:
@@ -192,14 +197,13 @@ services:
         - ${CONSULT_CODE_PATH_HOST}:${CONSULT_CODE_PATH_CONTAINER}
       links:
         - redis
-        - nginx:api.parallel.test
-        - nginx:web.parallel.test
       ports:
         - "${CONSULT_PORT}:8088"
       depends_on:
         - redis
         - api
       networks:
-        - frontend
-        - backend
- 
+        frontend:
+        backend:
+          aliases:
+            - consult.parallel.test 
