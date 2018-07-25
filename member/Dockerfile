@@ -12,6 +12,9 @@ RUN apk update && apk add curl bash tree tzdata && \
 
 WORKDIR /usr/src/member
 
+RUN cd /usr/src/member && \
+    npm install
+
 EXPOSE 1337
 
 CMD [ "node", "app.js" ]

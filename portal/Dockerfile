@@ -12,6 +12,9 @@ RUN apk update && apk add curl bash tree tzdata && \
 
 WORKDIR /usr/src/portal
 
+RUN cd /usr/src/portal && \
+    npm install
+
 EXPOSE 1338
 
 CMD [ "node", "app.js" ]

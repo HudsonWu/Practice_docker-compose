@@ -12,6 +12,9 @@ RUN apk update && apk add curl bash tree tzdata && \
 
 WORKDIR /usr/src/consult
 
+RUN cd /usr/src/consult && \
+    npm install
+
 EXPOSE 8088
 
 CMD [ "npm", "start" ]
