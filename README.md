@@ -8,6 +8,9 @@
 + 开启所有服务
 > docker-compose up -d
 
++ 关闭所有服务
+> docker-compose down
+
 + 只开启mysql
 > docker-compose up -d mysql
 
