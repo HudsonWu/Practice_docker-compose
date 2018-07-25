@@ -22,7 +22,9 @@ services:
     php-fpm:
       build:
         context: ./php-fpm
+      container_name: PHP-FPM
       volumes:
+        - ./php-fpm/php.ini:/usr/local/etc/php/php.ini
         - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
       ports:
         - "${FPM_PORT}:9000"
@@ -32,6 +34,7 @@ services:
     workspace:
       build:
         context: ./workspace
+      container_name: Workspace
       volumes:
         - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
       ports:
@@ -48,15 +51,11 @@ services:
         args:
           - PHP_UPSTREAM_CONTAINER=${NGINX_PHP_UPSTREAM_CONTAINER}
           - PHP_UPSTREAM_PORT=${NGINX_PHP_UPSTREAM_PORT}
+      container_name: Nginx
       volumes:
         - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
         - ${NGINX_HOST_LOG_PATH}:/var/log/nginx
         - ${NGINX_SITES_PATH}:/etc/nginx/sites-available
-      links:
-        - php-fpm
-        - redis
-        - mysql
-        - api
       ports:
         - "${NGINX_HOST_HTTP_PORT}:80"
       depends_on:
@@ -69,6 +68,7 @@ services:
     mysql:
       build:
         context: ./mysql
+      container_name: MySQL
       environment:
         - MYSQL_DATABASE=${MYSQL_DATABASE}
         - MYSQL_USER=${MYSQL_USER}
@@ -85,6 +85,7 @@ services:
 ## MongoDB ##############################################
     mongo:
       build: ./mongo
+      container_name: Mongod
       ports:
         - "${MONGODB_PORT}:27017"
       volumes:
@@ -95,6 +96,7 @@ services:
 ## Redis ################################################
     redis:
       build: ./redis
+      container_name: Redis
       volumes:
         - ${DATA_PATH_HOST}/redis:/data
       ports:
@@ -105,10 +107,11 @@ services:
 ## ElasticSearch ########################################
     elasticsearch:
       build: ./elasticsearch
+      container_name: Elasticsearch
       volumes:
         - elasticsearch:/usr/share/elasticsearch/data
       environment:
-        - cluster.name=laradock-cluster
+        - cluster.container_name=laradock-cluster
         - bootstrap.memory_lock=true
         - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       ulimits:
@@ -128,6 +131,7 @@ services:
     api:
       build:
         context: ./api
+      container_name: Api
       volumes:
         - ${API_CODE_PATH_HOST}:${API_CODE_PATH_CONTAINER}
       links:
@@ -145,10 +149,13 @@ services:
     member:
       build:
         context: ./member
+      container_name: Member
       volumes:
         - ${MEMBER_CODE_PATH_HOST}:${MEMBER_CODE_PATH_CONTAINER}
       links:
         - redis
+        - nginx:api.parallel.test
+        - nginx:web.parallel.test
       ports:
         - "${MEMBER_PORT}:1337"
       depends_on:
@@ -161,10 +168,13 @@ services:
     portal:
       build:
         context: ./portal
+      container_name: Portal
       volumes:
         - ${PORTAL_CODE_PATH_HOST}:${PORTAL_CODE_PATH_CONTAINER}
       links:
         - redis
+        - nginx:api.parallel.test
+        - nginx:web.parallel.test
       ports:
         - "${PORTAL_PORT}:1338"
       depends_on:
@@ -177,10 +187,13 @@ services:
     consult:
       build:
         context: ./consult
+      container_name: Consult
       volumes:
         - ${CONSULT_CODE_PATH_HOST}:${CONSULT_CODE_PATH_CONTAINER}
       links:
         - redis
+        - nginx:api.parallel.test
+        - nginx:web.parallel.test
       ports:
         - "${CONSULT_PORT}:8088"
       depends_on:
