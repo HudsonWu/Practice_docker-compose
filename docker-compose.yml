@@ -23,6 +23,7 @@ services:
       build:
         context: ./php-fpm
       container_name: PHP-FPM
+      restart: always
       volumes:
         - ./php-fpm/php.ini:/usr/local/etc/php/php.ini
         - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
@@ -35,6 +36,7 @@ services:
       build:
         context: ./workspace
       container_name: Workspace
+      restart: always
       volumes:
         - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
       ports:
@@ -52,6 +54,7 @@ services:
           - PHP_UPSTREAM_CONTAINER=${NGINX_PHP_UPSTREAM_CONTAINER}
           - PHP_UPSTREAM_PORT=${NGINX_PHP_UPSTREAM_PORT}
       container_name: Nginx
+      restart: always
       volumes:
         - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
         - ${NGINX_HOST_LOG_PATH}:/var/log/nginx
@@ -72,6 +75,7 @@ services:
       build:
         context: ./mysql
       container_name: MySQL
+      restart: always
       environment:
         - MYSQL_DATABASE=${MYSQL_DATABASE}
         - MYSQL_USER=${MYSQL_USER}
@@ -89,6 +93,7 @@ services:
     mongo:
       build: ./mongo
       container_name: Mongod
+      restart: always
       ports:
         - "${MONGODB_PORT}:27017"
       volumes:
@@ -100,6 +105,7 @@ services:
     redis:
       build: ./redis
       container_name: Redis
+      restart: always
       volumes:
         - ${DATA_PATH_HOST}/redis:/data
       ports:
@@ -111,6 +117,7 @@ services:
     elasticsearch:
       build: ./elasticsearch
       container_name: Elasticsearch
+      restart: always
       volumes:
         - elasticsearch:/usr/share/elasticsearch/data
       environment:
@@ -135,6 +142,7 @@ services:
       build:
         context: ./api
       container_name: Api
+      restart: always
       volumes:
         - ${API_CODE_PATH_HOST}:${API_CODE_PATH_CONTAINER}
       links:
@@ -153,6 +161,7 @@ services:
       build:
         context: ./member
       container_name: Member
+      restart: always
       volumes:
         - ${MEMBER_CODE_PATH_HOST}:${MEMBER_CODE_PATH_CONTAINER}
       links:
@@ -172,6 +181,7 @@ services:
       build:
         context: ./portal
       container_name: Portal
+      restart: always
       volumes:
         - ${PORTAL_CODE_PATH_HOST}:${PORTAL_CODE_PATH_CONTAINER}
       links:
@@ -191,6 +201,7 @@ services:
       build:
         context: ./consult
       container_name: Consult
+      restart: always
       volumes:
         - ${CONSULT_CODE_PATH_HOST}:${CONSULT_CODE_PATH_CONTAINER}
       links:
