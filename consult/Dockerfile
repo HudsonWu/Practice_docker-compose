@@ -10,8 +10,15 @@ RUN echo http://mirrors.ustc.edu.cn/alpine/v3.6/main > /etc/apk/repositories && 
 RUN apk update && apk add curl bash tree tzdata && \
     cp -r -f /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
+# 淘宝npm镜像
+RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
+
 WORKDIR /usr/src/consult
+
+RUN echo -e "#!/bin/bash\ncd /usr/src/consult\
+    && cnpm install && cnpm start" > /start.sh \
+    && chmod +x /start.sh
 
 EXPOSE 8088
 
-CMD [ "npm", "start" ]
+CMD [ "/start.sh" ]
