@@ -1,6 +1,5 @@
 # parallel_docker
 
-
 ## 服务开启
 
 **docker-compose的命令执行都是在parallel_docker根目录下执行的**
@@ -11,28 +10,23 @@
 + 关闭所有服务
 > docker-compose down
 
-+ 只开启mysql
-> docker-compose up -d mysql
++ 单独开启服务
+  + 只开启mysql
+  > docker-compose up -d mysql
+  + 只开启redis
+  > docker-compose up -d redis
+  + 只开启elasticsearch
+  > docker-compose up -d elasticsearch
+  + 只开启mongo
+  > docker-compose up -d mongo
+  + 开启php后台服务器
+  > docker-compose up -d mysql redis php-fpm nginx workspace
+  + 开启会员中心和门户网站
+  > docker-compose up -d nginx mysql redis php-fpm workspace member portal
+  + 开启咨询机构控制台
+  > docker-compose up -d nginx mysql redis mongo php-fpm workspace api member portal consult
 
-+ 只开启redis
-> docker-compose up -d redis
-
-+ 只开启elasticsearch
-> docker-compose up -d elasticsearch
-
-+ 只开启mongo
-> docker-compose up -d mongo
- 
-+ 开启php后台服务器
-> docker-compose up -d mysql redis php-fpm nginx workspace
-
-+ 开启会员中心和门户网站
-> docker-compose up -d nginx mysql redis php-fpm workspace member portal
-
-+ 开启咨询机构控制台
-> docker-compose up -d nginx mysql redis mongo php-fpm workspace api member portal consult
-
-(也可以单独开启容器的某一个服务，其他的服务连接外部)
+(单独开启容器的某一个服务，其他的服务连接外部)
 
 ## 服务维护
 
@@ -63,7 +57,7 @@ docker-compose exec mysql bash
 
 ## 使用前
 
-使用前需要你在系统上安装好docker以及docker-compose
+使用前需要你在系统上安装好docker以及docker-compose <br/>
 适用多系统 (windows, linux, MAC os等)
 
 下面是在linux环境下安装docker-compose的命令
