@@ -11,13 +11,13 @@
 > docker-compose down
 
 + 单独开启服务
-  + 只开启mysql
+  + 开启mysql
   > docker-compose up -d mysql
-  + 只开启redis
+  + 开启redis
   > docker-compose up -d redis
-  + 只开启elasticsearch
+  + 开启elasticsearch
   > docker-compose up -d elasticsearch
-  + 只开启mongo
+  + 开启mongo
   > docker-compose up -d mongo
   + 开启php后台服务器
   > docker-compose up -d mysql redis php-fpm nginx workspace
