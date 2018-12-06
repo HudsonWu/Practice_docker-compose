@@ -5,10 +5,14 @@
 **docker-compose的命令执行都是在parallel_docker根目录下执行的**
 
 + 开启所有服务
-> docker-compose up -d
+```
+docker-compose up -d
+```
 
 + 关闭所有服务
-> docker-compose down
+```
+docker-compose down
+```
 
 + 单独开启服务
   + 开启mysql
@@ -25,8 +29,6 @@
   > docker-compose up -d nginx mysql redis php-fpm workspace member portal
   + 开启咨询机构控制台
   > docker-compose up -d nginx mysql redis mongo php-fpm workspace api member portal consult
-
-(单独开启容器的某一个服务，其他的服务连接外部)
 
 ## 服务维护
 
@@ -75,16 +77,18 @@ curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://1f637783
 ### .env文件
 
 + 应用代码路径指定
-<pre>
+```
 APP_CODE_PATH_HOST    ParallelForPhp_new代码在本机路径
 API_CODE_PATH_HOST    ParallelApiForSails代码在本机路径
 MEMBER_CODE_PATH_HOST    MemberCenterForSails代码在本机路径
 PORTAL_CODE_PATH_HOST    ParallelPortalForSails代码在本机路径
 CONSULT_CODE_PATH_HOST    ParallelConsultationForVue代码在本机路径
-</pre>
+```
 
 + windows系统的特殊配置
-> COMPOSE_PATH_SEPARATOR=;
+```
+COMPOSE_PATH_SEPARATOR=;
+```
 
 + 具体容器的参数配置 (主要是端口指定)
 
