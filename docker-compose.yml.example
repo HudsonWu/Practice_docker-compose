@@ -31,6 +31,7 @@ services:
         - "${FPM_PORT}:9000"
       networks:
         - backend
+
 ## workspace #######################################
     workspace:
       build:
@@ -67,8 +68,8 @@ services:
         frontend:
         backend:
           aliases:
-            - api.parallel.test
-            - web.parallel.test
+            - api.example.test
+            - web.example.test
 
 ## MySQL ################################################
     mysql:
@@ -121,7 +122,7 @@ services:
       volumes:
         - elasticsearch:/usr/share/elasticsearch/data
       environment:
-        - cluster.name=parallel-cluster
+        - cluster.name=example-cluster
         - bootstrap.memory_lock=true
         - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       ulimits:
@@ -174,7 +175,7 @@ services:
         frontend:
         backend:
           aliases:
-            - member.parallel.test
+            - member.example.test
         
 ## portal #######################################
     portal:
@@ -194,7 +195,7 @@ services:
         frontend:
         backend:
           aliases:
-            - portal.parallel.test
+            - portal.example.test
 
  ## consult #######################################
     consult:
@@ -215,4 +216,4 @@ services:
         frontend:
         backend:
           aliases:
-            - consult.parallel.test 
+            - consult.example.test 

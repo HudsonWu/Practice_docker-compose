@@ -72,14 +72,8 @@ RUN yum clean all && \
 
 RUN mkdir -p /run/php-fpm
 
-WORKDIR /var/www/parallel
+WORKDIR /var/www/example
 
-# 开启队列
-RUN cd /var/www/parallel && \
-    php artisan queue:work redis --sleep=3 --tries=3 &
-
-RUN php-fpm
-
-CMD [ "/bin/bash" ]
+CMD [ "php-fpm" ]
 
 EXPOSE 9000 22

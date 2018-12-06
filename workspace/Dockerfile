@@ -20,4 +20,16 @@ RUN cat /tmp/id_rsa.pub >> /root/.ssh/authorized_keys \
     && chmod 644 /root/.ssh/authorized_keys /root/.ssh/id_rsa.pub \
     && chmod 400 /root/.ssh/id_rsa
 
-WORKDIR /var/www/parallel
+# supervisord
+RUN apt-get update
+RUN apt-get install -y supervisor
+COPY laravel-worker.conf /etc/supervisor/conf.d/laravel-worker.conf
+
+RUN php -r "readfile('https://getcomposer.org/installer');" | php \
+    && mv composer.phar /usr/bin/composer
+
+RUN composer config -g repo.packagist composer https://packagist.phpcomposer.com
+
+WORKDIR /var/www/example
+
+CMD [ "/usr/bin/supervisord", "-n" ]
