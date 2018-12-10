@@ -4,6 +4,6 @@ LABEL maintainer="wuhaishui <wuhaishui@zwehs.com>"
 
 WORKDIR /var/www/example
 
-CMD [ "php-fpm" ]
-
 EXPOSE 9000
+
+ENTRYPOINT ["/docker-entrypoint.sh"]

@@ -146,9 +146,6 @@ services:
       restart: always
       volumes:
         - ${API_CODE_PATH_HOST}:${API_CODE_PATH_CONTAINER}
-      links:
-        - redis
-        - mongo
       ports:
         - "${API_PORT}:8085"
       depends_on:
@@ -165,8 +162,6 @@ services:
       restart: always
       volumes:
         - ${MEMBER_CODE_PATH_HOST}:${MEMBER_CODE_PATH_CONTAINER}
-      links:
-        - redis
       ports:
         - "${MEMBER_PORT}:1337"
       depends_on:
@@ -185,8 +180,6 @@ services:
       restart: always
       volumes:
         - ${PORTAL_CODE_PATH_HOST}:${PORTAL_CODE_PATH_CONTAINER}
-      links:
-        - redis
       ports:
         - "${PORTAL_PORT}:1338"
       depends_on:
@@ -205,8 +198,6 @@ services:
       restart: always
       volumes:
         - ${CONSULT_CODE_PATH_HOST}:${CONSULT_CODE_PATH_CONTAINER}
-      links:
-        - redis
       ports:
         - "${CONSULT_PORT}:8088"
       depends_on:
